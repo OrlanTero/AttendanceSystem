@@ -37,7 +37,9 @@ import {
   Delete as DeleteIcon,
   Close as CloseIcon,
   PhotoCamera as PhotoCameraIcon,
+  Fingerprint as FingerprintIcon,
 } from "@mui/icons-material";
+import FingerprintScanner from "../components/FingerprintScanner";
 
 const EmployeesPage = ({ user, onLogout }) => {
   const [employees, setEmployees] = useState([]);
@@ -59,6 +61,7 @@ const EmployeesPage = ({ user, onLogout }) => {
     image: null,
   });
   const [previewImage, setPreviewImage] = useState(null);
+  const [openFingerprintDialog, setOpenFingerprintDialog] = useState(false);
 
   useEffect(() => {
     fetchEmployees();
@@ -225,6 +228,13 @@ const EmployeesPage = ({ user, onLogout }) => {
   const handleClose = () => {
     setOpenDialog(false);
     resetForm();
+  };
+
+  const handleFingerprintCapture = (biometricData) => {
+    setFormData((prev) => ({
+      ...prev,
+      biometric_data: biometricData,
+    }));
   };
 
   return (
@@ -489,13 +499,22 @@ const EmployeesPage = ({ user, onLogout }) => {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Biometric Data"
-                  name="biometric_data"
-                  value={formData.biometric_data}
-                  onChange={handleInputChange}
-                />
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<FingerprintIcon />}
+                    onClick={() => setOpenFingerprintDialog(true)}
+                  >
+                    {formData.biometric_data
+                      ? "Update Fingerprint"
+                      : "Capture Fingerprint"}
+                  </Button>
+                  {formData.biometric_data && (
+                    <Typography variant="body2" color="success.main">
+                      Fingerprint data captured
+                    </Typography>
+                  )}
+                </Box>
               </Grid>
               <Grid item xs={12}>
                 <Box
@@ -582,6 +601,12 @@ const EmployeesPage = ({ user, onLogout }) => {
           </DialogActions>
         </form>
       </Dialog>
+
+      <FingerprintScanner
+        open={openFingerprintDialog}
+        onClose={() => setOpenFingerprintDialog(false)}
+        onCapture={handleFingerprintCapture}
+      />
     </Box>
   );
 };

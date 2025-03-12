@@ -13,7 +13,8 @@
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch",
     "api": "node api/start-server.js",
-    "start-all": "node api/start-both.js"
+    "start-all": "node api/start-both.js",
+    "postinstall": "electron-rebuild"
   },
   "keywords": [],
   "author": {
@@ -35,7 +36,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "usb": "^2.15.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

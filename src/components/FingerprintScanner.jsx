@@ -1,221 +1,410 @@
 import React, { useState, useEffect } from "react";
 import {
+  Box,
   Button,
+  Typography,
+  Paper,
+  CircularProgress,
+  Alert,
+  Stack,
+  Divider,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Typography,
-  Box,
-  CircularProgress,
-  Alert,
+  IconButton,
 } from "@mui/material";
 import FingerprintIcon from "@mui/icons-material/Fingerprint";
+import CloseIcon from "@mui/icons-material/Close";
 
-const fingerprintScanner = window.electron?.fingerprintScanner;
+/**
+ * FingerprintScanner component for interacting with the fingerprint API
+ * This component provides UI for initializing, capturing, verifying, and registering fingerprints
+ */
+const FingerprintScanner = ({
+  open,
+  onClose,
+  onCapture,
+  mode = "register",
+  employeeId = null,
+}) => {
+  const [status, setStatus] = useState("idle"); // idle, initializing, ready, capturing, processing, success, error
+  const [message, setMessage] = useState("");
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [fingerprintData, setFingerprintData] = useState(null);
 
-const FingerprintScanner = ({ open, onClose, onCapture }) => {
-  const [isScanning, setIsScanning] = useState(false);
-  const [error, setError] = useState("");
-  const [progress, setProgress] = useState(0);
-  const [deviceReady, setDeviceReady] = useState(false);
-  const [isChecking, setIsChecking] = useState(false);
-  const [debugInfo, setDebugInfo] = useState("");
+  // Base URL for the fingerprint API
+  const API_BASE_URL = "http://localhost:3000/api/fingerprint";
 
+  // Initialize the scanner when the dialog opens
   useEffect(() => {
     if (open) {
-      checkDevice();
+      checkStatus();
+    } else {
+      // Reset state when dialog closes
+      setStatus("idle");
+      setMessage("");
+      setIsInitialized(false);
+      setFingerprintData(null);
     }
   }, [open]);
 
-  const checkDevice = async () => {
+  // Check if the scanner is connected
+  const checkStatus = async () => {
+    setStatus("initializing");
+    setMessage("Checking scanner status...");
+
     try {
-      setError("");
-      setDebugInfo("");
-      setIsChecking(true);
+      const response = await fetch(`${API_BASE_URL}/status`);
+      const data = await response.json();
 
-      if (!window.electron) {
-        throw new Error("Electron API not available");
+      if (data.success) {
+        setMessage("Scanner is connected.");
+        initializeScanner();
+      } else {
+        setStatus("error");
+        setMessage(
+          "Scanner not connected. Please connect the scanner and try again."
+        );
       }
-
-      if (!fingerprintScanner) {
-        throw new Error("Fingerprint scanner API not available");
-      }
-
-      console.log("Checking for fingerprint devices...");
-      const result = await fingerprintScanner.checkDevices();
-      console.log("Device check result:", result);
-
-      setDeviceReady(true);
-      setDebugInfo("Device detected and ready");
     } catch (error) {
-      console.error("Device check error:", error);
-      setError(error.message || "Failed to detect fingerprint scanner");
-      setDebugInfo(`Error details: ${error.message}`);
-      setDeviceReady(false);
-    } finally {
-      setIsChecking(false);
-    }
-  };
-
-  useEffect(() => {
-    let timer;
-    if (isScanning) {
-      timer = setInterval(() => {
-        setProgress((prevProgress) => {
-          const newProgress = prevProgress + 10;
-          if (newProgress >= 100) {
-            clearInterval(timer);
-            return 100;
-          }
-          return newProgress;
-        });
-      }, 500);
-    }
-    return () => clearInterval(timer);
-  }, [isScanning]);
-
-  const handleStartScan = async () => {
-    try {
-      setError("");
-      setDebugInfo("");
-      setIsScanning(true);
-      setProgress(0);
-
-      console.log("Starting fingerprint capture...");
-      await fingerprintScanner.startCapture();
-
-      console.log("Capturing fingerprint sample...");
-      const biometricData = await fingerprintScanner.captureSample();
-
-      console.log("Fingerprint captured successfully");
-      onCapture(biometricData);
-      handleClose();
-    } catch (error) {
-      console.error("Fingerprint scan error:", error);
-      setError(
-        error.message || "Failed to capture fingerprint. Please try again."
+      console.error("Error checking scanner status:", error);
+      setStatus("error");
+      setMessage(
+        "Error connecting to fingerprint service. Please ensure the service is running."
       );
-      setDebugInfo(`Scan error details: ${error.message}`);
-    } finally {
-      setIsScanning(false);
-      setProgress(0);
-      try {
-        await fingerprintScanner.stopCapture();
-      } catch (error) {
-        console.error("Error stopping capture:", error);
-      }
     }
   };
 
-  const handleClose = () => {
-    setIsScanning(false);
-    setError("");
-    setProgress(0);
-    setDeviceReady(false);
-    setDebugInfo("");
-    onClose();
+  // Initialize the scanner
+  const initializeScanner = async () => {
+    setStatus("initializing");
+    setMessage("Initializing scanner...");
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/initialize`);
+      const data = await response.json();
+
+      if (data.success) {
+        setStatus("ready");
+        setIsInitialized(true);
+        setMessage("Scanner initialized. Ready to scan.");
+      } else {
+        setStatus("error");
+        setMessage(`Failed to initialize scanner: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error initializing scanner:", error);
+      setStatus("error");
+      setMessage("Error initializing scanner. Please try again.");
+    }
   };
 
-  const handleRetry = () => {
-    checkDevice();
+  // Capture a fingerprint
+  const captureFingerprint = async () => {
+    if (!isInitialized) {
+      initializeScanner();
+      return;
+    }
+
+    setStatus("capturing");
+    setMessage("Place your finger on the scanner...");
+
+    try {
+      console.log("Starting fingerprint capture request...");
+
+      // Create a controller for each attempt instead of one for the whole process
+      let success = false;
+      let lastError = null;
+      let data = null;
+      const maxAttempts = 3;
+
+      for (let attempts = 1; attempts <= maxAttempts; attempts++) {
+        console.log(`Capture attempt ${attempts}/${maxAttempts}...`);
+
+        // Create a new controller for each attempt with a longer timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+          console.log(`Timeout for attempt ${attempts}, aborting...`);
+          controller.abort();
+        }, 45000); // 45 seconds timeout - longer than the server-side timeout
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/capture`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            signal: controller.signal,
+          });
+
+          // Clear the timeout as soon as we get a response
+          clearTimeout(timeoutId);
+
+          console.log(
+            `Received response from capture endpoint (attempt ${attempts}):`,
+            response.status
+          );
+          data = await response.json();
+          console.log(`Capture response data (attempt ${attempts}):`, data);
+
+          if (data.success) {
+            success = true;
+            break;
+          } else {
+            console.warn(
+              `Capture failed (attempt ${attempts}): ${data.message}`
+            );
+            // Wait a bit before retrying
+            if (attempts < maxAttempts) {
+              setMessage(`Retrying capture (${attempts}/${maxAttempts})...`);
+              await new Promise((resolve) => setTimeout(resolve, 2000));
+              setMessage("Place your finger on the scanner...");
+            }
+          }
+        } catch (err) {
+          // Clear the timeout if there was an error
+          clearTimeout(timeoutId);
+
+          console.error(`Error during capture attempt ${attempts}:`, err);
+          lastError = err;
+
+          // Wait a bit before retrying
+          if (attempts < maxAttempts) {
+            setMessage(`Retrying capture (${attempts}/${maxAttempts})...`);
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            setMessage("Place your finger on the scanner...");
+          }
+        }
+      }
+
+      if (success && data) {
+        setFingerprintData(data.data);
+        setStatus("success");
+        setMessage("Fingerprint captured successfully.");
+
+        console.log("Fingerprint captured successfully:", data);
+        if (mode === "verify" && employeeId) {
+          verifyFingerprint(data.data, employeeId);
+        } else if (mode === "register" && employeeId) {
+          registerFingerprint(data.data, employeeId);
+        } else {
+          // Call the onCapture callback with the fingerprint data
+          if (onCapture) {
+            onCapture(data.data);
+          }
+        }
+      } else {
+        setStatus("error");
+        const errorMessage = data
+          ? data.message
+          : lastError
+          ? lastError.message
+          : "Unknown error";
+        setMessage(
+          `Failed to capture fingerprint after ${maxAttempts} attempts: ${errorMessage}`
+        );
+        console.error("All capture attempts failed:", errorMessage);
+      }
+    } catch (error) {
+      console.error("Error in capture process:", error);
+      setStatus("error");
+      setMessage(
+        `Error capturing fingerprint: ${error.message}. Please try again.`
+      );
+    }
+  };
+
+  // Verify a fingerprint
+  const verifyFingerprint = async (fingerprintData, employeeId) => {
+    setStatus("processing");
+    setMessage("Verifying fingerprint...");
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/verify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fingerprintData,
+          employeeId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStatus("success");
+        setMessage("Fingerprint verified successfully.");
+        if (onCapture) {
+          onCapture(fingerprintData);
+        }
+      } else {
+        setStatus("error");
+        setMessage(`Fingerprint verification failed: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error verifying fingerprint:", error);
+      setStatus("error");
+      setMessage("Error verifying fingerprint. Please try again.");
+    }
+  };
+
+  // Register a fingerprint
+  const registerFingerprint = async (fingerprintData, employeeId) => {
+    setStatus("processing");
+    setMessage("Registering fingerprint...");
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fingerprintData,
+          employeeId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStatus("success");
+        setMessage("Fingerprint registered successfully.");
+        if (onCapture) {
+          onCapture(fingerprintData);
+        }
+      } else {
+        setStatus("error");
+        setMessage(`Fingerprint registration failed: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error registering fingerprint:", error);
+      setStatus("error");
+      setMessage("Error registering fingerprint. Please try again.");
+    }
+  };
+
+  // Reset the component state
+  const resetScanner = () => {
+    setStatus("ready");
+    setMessage("Scanner ready. Click to scan.");
+    setFingerprintData(null);
+  };
+
+  // Handle dialog close
+  const handleClose = () => {
+    if (status !== "capturing" && status !== "processing") {
+      onClose();
+    }
+  };
+
+  // Handle save and close
+  const handleSave = () => {
+    if (fingerprintData && onCapture) {
+      onCapture(fingerprintData);
+    }
+    onClose();
   };
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Fingerprint Scanner</DialogTitle>
-      <DialogContent>
+      <DialogTitle>
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
+            justifyContent: "space-between",
             alignItems: "center",
-            py: 3,
           }}
         >
-          {error ? (
-            <>
-              <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
-                {error}
-              </Alert>
-              {debugInfo && (
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ mb: 2 }}
-                >
-                  {debugInfo}
-                </Typography>
-              )}
-              <Button
-                onClick={handleRetry}
-                variant="outlined"
-                disabled={isChecking}
-                startIcon={isChecking ? <CircularProgress size={20} /> : null}
-              >
-                Retry Device Detection
-              </Button>
-            </>
-          ) : null}
-
-          {isScanning ? (
-            <>
-              <CircularProgress
-                variant="determinate"
-                value={progress}
-                size={80}
-                thickness={4}
-                sx={{ mb: 2 }}
-              />
-              <Typography variant="body1" color="text.secondary">
-                Place your finger on the scanner...
-              </Typography>
-            </>
-          ) : (
-            <>
-              {isChecking ? (
-                <CircularProgress size={80} sx={{ mb: 2 }} />
-              ) : (
-                <FingerprintIcon
-                  sx={{
-                    fontSize: 80,
-                    color: deviceReady ? "primary.main" : "action.disabled",
-                    mb: 2,
-                  }}
-                />
-              )}
-              <Typography variant="body1" color="text.secondary">
-                {isChecking
-                  ? "Checking scanner availability..."
-                  : deviceReady
-                  ? "Scanner ready. Click Start Scan to begin."
-                  : "Scanner not detected. Please check connection."}
-              </Typography>
-              {debugInfo && !error && (
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ mt: 1 }}
-                >
-                  {debugInfo}
-                </Typography>
-              )}
-            </>
-          )}
+          <Typography variant="h6">
+            {mode === "verify" ? "Verify Fingerprint" : "Register Fingerprint"}
+          </Typography>
+          <IconButton onClick={handleClose} size="small">
+            <CloseIcon />
+          </IconButton>
         </Box>
+      </DialogTitle>
+      <DialogContent dividers>
+        <Stack spacing={3} alignItems="center">
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: 200,
+              width: "100%",
+              position: "relative",
+            }}
+          >
+            {status === "initializing" ||
+            status === "capturing" ||
+            status === "processing" ? (
+              <CircularProgress size={80} />
+            ) : (
+              <FingerprintIcon
+                sx={{
+                  fontSize: 100,
+                  color:
+                    status === "success"
+                      ? "success.main"
+                      : status === "error"
+                      ? "error.main"
+                      : "primary.main",
+                  opacity: status === "idle" ? 0.5 : 1,
+                }}
+              />
+            )}
+
+            <Typography variant="body1" sx={{ mt: 2, textAlign: "center" }}>
+              {message}
+            </Typography>
+          </Box>
+
+          <Box sx={{ width: "100%" }}>
+            {status === "error" && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {message}
+              </Alert>
+            )}
+
+            {status === "success" && (
+              <Alert severity="success" sx={{ mb: 2 }}>
+                {message}
+              </Alert>
+            )}
+          </Box>
+        </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} disabled={isScanning}>
-          Cancel
-        </Button>
-        <Button
-          onClick={handleStartScan}
-          variant="contained"
-          disabled={isScanning || !deviceReady || isChecking}
-          startIcon={<FingerprintIcon />}
-        >
-          {isScanning ? "Scanning..." : "Start Scan"}
-        </Button>
+        <Button onClick={handleClose}>Cancel</Button>
+        {status === "success" ? (
+          <Button variant="contained" color="primary" onClick={handleSave}>
+            Save
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={captureFingerprint}
+            disabled={status === "capturing" || status === "processing"}
+          >
+            {status === "idle" || status === "initializing"
+              ? "Initialize Scanner"
+              : status === "ready"
+              ? "Scan Fingerprint"
+              : status === "capturing"
+              ? "Scanning..."
+              : status === "processing"
+              ? mode === "verify"
+                ? "Verifying..."
+                : "Registering..."
+              : "Scan Again"}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

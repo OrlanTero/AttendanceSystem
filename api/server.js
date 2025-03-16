@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth");
 const employeeRoutes = require("./routes/employees");
 const departmentRoutes = require("./routes/departments");
 const holidayRoutes = require("./routes/holidays");
+const fingerprintRoutes = require("./routes/fingerprint");
 
 // Initialize express app
 const app = express();
@@ -28,6 +29,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/holidays", holidayRoutes);
+app.use("/api/fingerprint", fingerprintRoutes);
 
 // Root route
 app.get("/", (req, res) => {
@@ -41,6 +43,7 @@ app.get("/", (req, res) => {
       "/api/employees",
       "/api/departments",
       "/api/holidays",
+      "/api/fingerprint",
     ],
   });
 });

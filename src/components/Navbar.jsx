@@ -25,6 +25,7 @@ import {
   People as PeopleIcon,
   Business as BusinessIcon,
   Event as EventIcon,
+  Fingerprint as FingerprintIcon,
 } from "@mui/icons-material";
 import logo from "../assets/logo.png";
 
@@ -52,6 +53,11 @@ const Navbar = ({ user, onLogout }) => {
       path: "/holidays",
       name: "Holidays",
       icon: <EventIcon />,
+    },
+    {
+      path: "/fingerprint",
+      name: "Fingerprint",
+      icon: <FingerprintIcon />,
     },
     {
       path: "/attendance",

@@ -4,11 +4,25 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 // Whitelist of valid channels for security
-const validSendChannels = ["login", "logout"];
+const validSendChannels = [
+  "login",
+  "logout",
+  "fingerprint-initialize",
+  "fingerprint-capture",
+  "fingerprint-verify",
+  "fingerprint-register",
+  "fingerprint-status",
+];
+
 const validReceiveChannels = [
   "set-initial-route",
   "login-response",
   "window-state-change",
+  "fingerprint-initialize-response",
+  "fingerprint-capture-response",
+  "fingerprint-verify-response",
+  "fingerprint-register-response",
+  "fingerprint-status-response",
 ];
 
 // Expose protected methods that allow the renderer process to use

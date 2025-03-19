@@ -9,6 +9,8 @@ import EmployeesPage from "../pages/EmployeesPage";
 import DepartmentsPage from "../pages/DepartmentsPage";
 import HolidaysPage from "../pages/HolidaysPage";
 import FingerprintPage from "../pages/FingerprintPage";
+import AttendancePage from "../pages/AttendancePage";
+import ReportPage from "../pages/ReportPage";
 
 // Create a custom theme
 const theme = createTheme({
@@ -154,6 +156,11 @@ const App = () => {
     navigate("/login");
   };
 
+  // Handle navigation from MainPage
+  const handleNavigate = (route) => {
+    navigate(`/${route}`);
+  };
+
   // Protected route component
   const ProtectedRoute = ({ element }) => {
     return isAuthenticated ? element : <Navigate to="/login" replace />;
@@ -177,7 +184,13 @@ const App = () => {
           path="/main"
           element={
             <ProtectedRoute
-              element={<MainPage user={currentUser} onLogout={handleLogout} />}
+              element={
+                <MainPage
+                  user={currentUser}
+                  onLogout={handleLogout}
+                  onNavigate={handleNavigate}
+                />
+              }
             />
           }
         />
@@ -217,6 +230,26 @@ const App = () => {
             <ProtectedRoute
               element={
                 <FingerprintPage user={currentUser} onLogout={handleLogout} />
+              }
+            />
+          }
+        />
+        <Route
+          path="/attendance"
+          element={
+            <ProtectedRoute
+              element={
+                <AttendancePage user={currentUser} onLogout={handleLogout} />
+              }
+            />
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute
+              element={
+                <ReportPage user={currentUser} onLogout={handleLogout} />
               }
             />
           }

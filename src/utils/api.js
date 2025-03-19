@@ -1,5 +1,24 @@
 // API utility for the renderer process
-const API_URL = "http://localhost:3000/api";
+export const IPADDRESS = "192.168.1.19";
+export const API_URL = `http://${IPADDRESS}:3000/api`;
+export const SOCKET_API_URL = `http://${IPADDRESS}:3005`;
+
+// Helper function to format dates consistently
+function formatDateForAPI(date) {
+  if (!date) return "";
+
+  // If it's already a string in YYYY-MM-DD format, return as is
+  if (typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return date;
+  }
+
+  // Otherwise convert to YYYY-MM-DD format
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 // Generic fetch function with error handling
 async function fetchAPI(endpoint, options = {}) {
@@ -50,6 +69,10 @@ export async function login(username, password) {
 // Users
 export async function getUsers() {
   return await fetchAPI("/users");
+}
+
+export async function getTemplates() {
+  return await fetchAPI("/employees/templates");
 }
 
 export async function getUser(id) {
@@ -288,6 +311,179 @@ export const deleteHoliday = async (holidayId) => {
   }
 };
 
+// Attendance APIs
+export const getAttendanceByDate = async (date) => {
+  try {
+    const formattedDate = formatDateForAPI(date);
+    console.log("Getting attendance for date:", formattedDate);
+    const response = await fetchAPI(`/attendance?date=${formattedDate}`);
+    return response.data || [];
+  } catch (error) {
+    console.error("Error in getAttendanceByDate:", error);
+    return [];
+  }
+};
+
+export async function getAttendanceByEmployee(employeeId) {
+  try {
+    const response = await fetchAPI(`/attendance?employeeId=${employeeId}`);
+    return response;
+  } catch (error) {
+    console.error("Error in getAttendanceByEmployee:", error);
+    return { success: false, message: "Failed to fetch attendance records" };
+  }
+}
+
+export const getAttendanceByEmployeeAndDate = async (employeeId, date) => {
+  try {
+    const formattedDate = formatDateForAPI(date);
+    console.log(
+      "Getting attendance for employee ID:",
+      employeeId,
+      "and date:",
+      formattedDate
+    );
+    const response = await fetchAPI(
+      `/attendance?employeeId=${employeeId}&date=${formattedDate}`
+    );
+    return response.data || [];
+  } catch (error) {
+    console.error("Error in getAttendanceByEmployeeAndDate:", error);
+    return [];
+  }
+};
+
+export const fetchAttendanceWithPagination = async (endpoint) => {
+  try {
+    console.log("Fetching attendance with pagination:", endpoint);
+    const response = await fetchAPI(endpoint);
+    return response;
+  } catch (error) {
+    console.error("Error in fetchAttendanceWithPagination:", error);
+    return { success: false, message: "Failed to fetch attendance records" };
+  }
+};
+
+export async function checkInEmployee(employeeId) {
+  try {
+    const today = formatDateForAPI(new Date());
+    console.log(
+      "Checking in employee with ID:",
+      employeeId,
+      "for date:",
+      today
+    );
+
+    return await fetchAPI("/attendance/check-in", {
+      method: "POST",
+      body: JSON.stringify({ employeeId, date: today }),
+    });
+  } catch (error) {
+    console.error("Error in checkInEmployee:", error);
+    return {
+      success: false,
+      message: error.message || "Failed to check in employee",
+    };
+  }
+}
+
+export async function checkOutEmployee(attendanceId) {
+  try {
+    return await fetchAPI(`/attendance/check-out/${attendanceId}`, {
+      method: "PUT",
+    });
+  } catch (error) {
+    console.error("Error in checkOutEmployee:", error);
+    return {
+      success: false,
+      message: error.message || "Failed to check out employee",
+    };
+  }
+}
+
+// Report-specific APIs
+export const getAttendanceReport = async (
+  startDate,
+  endDate,
+  employeeId = null
+) => {
+  try {
+    // Format dates
+    const formattedStartDate = formatDateForAPI(startDate);
+    const formattedEndDate = formatDateForAPI(endDate);
+
+    console.log(
+      "Generating attendance report from",
+      formattedStartDate,
+      "to",
+      formattedEndDate
+    );
+
+    // Build query parameters
+    let endpoint = "/attendance?";
+    const params = new URLSearchParams();
+
+    params.append("startDate", formattedStartDate);
+    params.append("endDate", formattedEndDate);
+    params.append("limit", "1000"); // Get a large number of records for reports
+
+    if (employeeId) {
+      params.append("employeeId", employeeId);
+    }
+
+    endpoint += params.toString();
+
+    // Fetch data
+    const response = await fetchAPI(endpoint);
+    return response;
+  } catch (error) {
+    console.error("Error in getAttendanceReport:", error);
+    return {
+      success: false,
+      message: "Failed to generate attendance report",
+      data: [],
+    };
+  }
+};
+
+// Work Schedule APIs
+export const getEmployeeWorkSchedule = async (employeeId) => {
+  try {
+    const response = await fetchAPI(`/work-schedule/${employeeId}`);
+    return response;
+  } catch (error) {
+    console.error("Error in getEmployeeWorkSchedule:", error);
+    return {
+      success: false,
+      message: "Failed to fetch work schedule",
+      data: {
+        monday: true,
+        tuesday: true,
+        wednesday: true,
+        thursday: true,
+        friday: true,
+        saturday: false,
+        sunday: false,
+      },
+    };
+  }
+};
+
+export const updateEmployeeWorkSchedule = async (employeeId, scheduleData) => {
+  try {
+    return await fetchAPI(`/work-schedule/${employeeId}`, {
+      method: "PUT",
+      body: JSON.stringify(scheduleData),
+    });
+  } catch (error) {
+    console.error("Error in updateEmployeeWorkSchedule:", error);
+    return {
+      success: false,
+      message: "Failed to update work schedule",
+    };
+  }
+};
+
 export default {
   testConnection,
   login,
@@ -311,4 +507,16 @@ export default {
   createHoliday,
   updateHoliday,
   deleteHoliday,
+  getAttendanceByDate,
+  getAttendanceByEmployee,
+  getAttendanceByEmployeeAndDate,
+  fetchAttendanceWithPagination,
+  checkInEmployee,
+  checkOutEmployee,
+  getAttendanceReport,
+  getEmployeeWorkSchedule,
+  updateEmployeeWorkSchedule,
+  IPADDRESS,
+  API_URL,
+  SOCKET_API_URL,
 };

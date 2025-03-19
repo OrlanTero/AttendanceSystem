@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, screen } = require("electron");
 const path = require("node:path");
 const isDev = process.env.NODE_ENV === "development";
 const { initDatabase, authenticateUser, closeDb } = require("./utils/db");
+const { exec } = require("child_process");
 
 let mainWindow = null;
 let splashWindow = null;
@@ -81,7 +82,10 @@ const createMainWindow = () => {
     });
   } else {
     // Load the local file in production mode
-    mainWindow.loadFile(path.join(__dirname, "index.html"));
+    // mainWindow.loadFile(path.join(__dirname, "index.html"));
+
+    const indexPath = path.join(__dirname, "src", "index.html");
+    mainWindow.loadURL(`file://${indexPath}`);
   }
 
   // Show main window when it's ready

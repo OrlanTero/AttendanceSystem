@@ -73,6 +73,22 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/templates", async (req, res) => {
+  try {
+    const templates = await Employee.getTemplates();
+
+    if (!templates) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No templates found" });
+    }
+
+    res.json({ success: true, data: templates });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // Create new employee
 router.post("/", upload.single("image"), async (req, res) => {
   try {

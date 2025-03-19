@@ -1,6 +1,17 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const isDev = process.env.NODE_ENV === "development";
+const http = require("http");
+const { Server } = require("socket.io");
+const express = require("express");
+const application = express();
+const PORT = 3005;
+const server = http.createServer(application);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -23,7 +34,7 @@ const createWindow = () => {
 
   // Load the entry point
   if (isDev) {
-    mainWindow.loadURL("http://localhost:3001");
+    mainWindow.loadURL(`http://localhost:${PORT}`);
     mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(path.join(__dirname, "../build/index.html"));
@@ -89,6 +100,20 @@ ipcMain.handle("fingerprint:stopCapture", async () => {
     console.error("Error stopping capture:", error);
     throw error;
   }
+});
+
+// Handle Socket.IO Connections
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
+
+  socket.on("message", (data) => {
+    console.log("Received from WFA:", data);
+    socket.emit("response", `Echo: ${data}`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
 });
 
 // Clean up fingerprint scanner when app is quitting

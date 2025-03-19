@@ -1,3 +1,0 @@
-@echo off
-echo Starting Fingerprint Services...
-powershell -ExecutionPolicy Bypass -File "%~dp0start-fingerprint.ps1" 

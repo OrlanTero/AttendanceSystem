@@ -1,0 +1,158 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|g:\\attendanceelectron\\fingerprintapi\\fingerprinta\\fingerprinta\\socketfingerprintserver.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|solutionrelative:fingerprinta\\socketfingerprintserver.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|g:\\attendanceelectron\\fingerprintapi\\fingerprinta\\fingerprinta\\biometric.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|solutionrelative:fingerprinta\\biometric.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|g:\\attendanceelectron\\fingerprintapi\\fingerprinta\\fingerprinta\\form1.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|solutionrelative:fingerprinta\\form1.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|g:\\attendanceelectron\\fingerprintapi\\fingerprinta\\fingerprinta\\form1.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form",
+      "RelativeMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|solutionrelative:fingerprinta\\form1.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|g:\\attendanceelectron\\fingerprintapi\\fingerprinta\\fingerprinta\\fingerprinta.vbproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|solutionrelative:fingerprinta\\fingerprinta.vbproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|g:\\attendanceelectron\\fingerprintapi\\fingerprinta\\fingerprinta\\program.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|solutionrelative:fingerprinta\\program.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|g:\\attendanceelectron\\fingerprintapi\\fingerprinta\\fingerprinta\\fingerprinta.vbproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{3252C8C6-1960-4A1D-99CE-83243D2E7D24}|FingerPrintA\\FingerPrintA.vbproj|solutionrelative:fingerprinta\\fingerprinta.vbproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 349,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "FingerPrintA.vbproj",
+              "DocumentMoniker": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\FingerPrintA.vbproj",
+              "RelativeDocumentMoniker": "FingerPrintA\\FingerPrintA.vbproj",
+              "ToolTip": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\FingerPrintA.vbproj",
+              "RelativeToolTip": "FingerPrintA\\FingerPrintA.vbproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003380|",
+              "WhenOpened": "2025-03-18T13:34:04.066Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Program.vb",
+              "DocumentMoniker": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\Program.vb",
+              "RelativeDocumentMoniker": "FingerPrintA\\Program.vb",
+              "ToolTip": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\Program.vb",
+              "RelativeToolTip": "FingerPrintA\\Program.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-18T09:03:46.069Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "FingerPrintA",
+              "DocumentMoniker": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\FingerPrintA.vbproj",
+              "RelativeDocumentMoniker": "FingerPrintA\\FingerPrintA.vbproj",
+              "ToolTip": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\FingerPrintA.vbproj",
+              "RelativeToolTip": "FingerPrintA\\FingerPrintA.vbproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003380|",
+              "WhenOpened": "2025-03-18T08:43:56.114Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SocketFingerprintServer.vb",
+              "DocumentMoniker": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\SocketFingerprintServer.vb",
+              "RelativeDocumentMoniker": "FingerPrintA\\SocketFingerprintServer.vb",
+              "ToolTip": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\SocketFingerprintServer.vb",
+              "RelativeToolTip": "FingerPrintA\\SocketFingerprintServer.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-18T07:57:17.274Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Biometric.vb",
+              "DocumentMoniker": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\Biometric.vb",
+              "RelativeDocumentMoniker": "FingerPrintA\\Biometric.vb",
+              "ToolTip": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\Biometric.vb",
+              "RelativeToolTip": "FingerPrintA\\Biometric.vb",
+              "ViewState": "AgIAAKMAAAAAAAAAAAAAALcAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-18T07:56:18.944Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Form1.vb",
+              "DocumentMoniker": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\Form1.vb",
+              "RelativeDocumentMoniker": "FingerPrintA\\Form1.vb",
+              "ToolTip": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\Form1.vb",
+              "RelativeToolTip": "FingerPrintA\\Form1.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-18T07:54:45.708Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Form1.vb [Design]",
+              "DocumentMoniker": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\Form1.vb",
+              "RelativeDocumentMoniker": "FingerPrintA\\Form1.vb",
+              "ToolTip": "G:\\AttendanceElectron\\FingerprintAPI\\FingerPrintA\\FingerPrintA\\Form1.vb [Design]",
+              "RelativeToolTip": "FingerPrintA\\Form1.vb [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-03-18T07:54:23.698Z",
+              "EditorCaption": " [Design]"
+            }
+          ]
+        },
+        {
+          "DockedHeight": 152,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

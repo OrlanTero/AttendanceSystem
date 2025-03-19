@@ -55,11 +55,6 @@ const Navbar = ({ user, onLogout }) => {
       icon: <EventIcon />,
     },
     {
-      path: "/fingerprint",
-      name: "Fingerprint",
-      icon: <FingerprintIcon />,
-    },
-    {
       path: "/attendance",
       name: "Attendance",
       icon: <EventNote />,

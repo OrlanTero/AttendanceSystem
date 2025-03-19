@@ -11,6 +11,25 @@ class Employee {
     }
   }
 
+  // Get employee templates
+  static async getTemplates() {
+    try {
+      const employees = await db.getAllEmployees();
+
+      const templates = employees.map((employee) => {
+        return {
+          employee_id: employee.employee_id,
+          template: employee.biometric_data,
+        };
+      });
+
+      return templates;
+    } catch (error) {
+      console.error("Error getting employee templates:", error);
+      return [];
+    }
+  }
+
   // Get employee by ID
   static async getById(employeeId) {
     try {

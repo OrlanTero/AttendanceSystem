@@ -1,4 +1,5 @@
 @echo off
 echo Starting Electron Application...
-SET NODE_ENV=development
-npx electron-forge start 
+npm start
+echo Starting API
+cd api && node server.js
